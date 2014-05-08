@@ -17,8 +17,18 @@
     this.player = Game.marks[0];
     this.board = this.makeBoard();
   }
-
-  Game.marks = ["x", "o"];
+  Game.colors = [
+    "DarkTurquoise",
+    "Green",
+    "LightSeaGreen",
+    "LimeGreen",
+    "OliveDrab",
+    "MediumSpringGreen",
+    "SeaGreen",
+    "PaleGreen",
+    "YellowGreen"
+    ]
+  Game.marks = _.sample(Game.colors, 2);
 
   Game.prototype.diagonalWinner = function () {
     var game = this;
@@ -92,6 +102,9 @@
 
   Game.prototype.placeMark = function (pos) {
     this.board[pos[0]][pos[1]] = this.player;
+    var idx = Game.POS.indexOf(pos);
+    var $square = $("#" + idx);
+    $square.css("background-color", this.player)
   };
 
   Game.prototype.switchPlayer = function () {
@@ -100,6 +113,7 @@
     } else {
       this.player = Game.marks[0];
     }
+    $('#current_player').html("It is " + this.player + "'s turn.")
   };
 
   Game.prototype.valid = function (pos) {
@@ -158,6 +172,7 @@
       squareString += ("<div class='square' id='" + i + "'></div>")
     });
     $('#board').html(squareString);
+    $('#current_player').html("It is " + this.player + "'s turn");
   }
 
   Game.prototype.run = function () {
@@ -176,17 +191,13 @@
 
   Game.prototype.turn = function (pos, callback) {
     var game = this;
-
-    READER.question("Enter coordinates like [row,column]: ",function(strCoords){
-      var coords = eval(strCoords); // Totally insecure way to parse the string "[1,2]" into the array [1,2].
-      if (game.valid(coords)) {
-        game.move(coords);
+    console.log(this.board);
+      if (game.valid(pos)) {
+        game.move(pos);
         callback();
       } else {
         console.log("Invalid coords!");
-        game.turn(callback);
       }
-    });
   }
 
   Game.POS = [
@@ -204,19 +215,24 @@
   Game.prototype.setHandlers = function () {
 
     var game = this;
-
     $(".square").click(function(){
       game.handleClick(this);
     })
   }
 
   Game.prototype.handleClick = function (square) {
-    this.turn( Game.POS[square.id], function(){
-      if (game.winner()) {
-        console.log("Someone won!");
-        READER.close();
-      }
-    });
+    var game = this;
+
+    if(!game.winner()){
+      game.turn( Game.POS[square.id], function(){
+        if (game.winner()) {
+          var winner = (game.player === Game.marks[0] ? Game.marks[1] : Game.marks[0]);
+          $('#current_player').html(winner + " won!");
+          $('.square').css('background-color', winner);
+          console.log("Someone won!");
+        }
+      });
+    }
   }
 })(this);
 
