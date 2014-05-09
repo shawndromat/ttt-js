@@ -1,16 +1,5 @@
 (function (root) {
 
-
-  // if (!(typeof(require) === "undefined")) {
-  //   _ = require('./underscore.js');
-  // }
-
-  // var readline = require('readline');
-  // var READER = readline.createInterface({
-  //   input: process.stdin,
-  //   output: process.stdout
-  // });
-
   var TTT = root.TTT = (root.TTT || {});
 
   var Game = TTT.Game = function TT() {
@@ -102,9 +91,6 @@
 
   Game.prototype.placeMark = function (pos) {
     this.board[pos[0]][pos[1]] = this.player;
-    var idx = Game.POS.indexOf(pos);
-    var $square = $("#" + idx);
-    $square.css("background-color", this.player)
   };
 
   Game.prototype.switchPlayer = function () {
@@ -166,15 +152,6 @@
     })
   }
 
-  Game.prototype.buildBoard = function () {
-    var squareString = "";
-    _.times(9, function(i) {
-      squareString += ("<div class='square' id='" + i + "'></div>")
-    });
-    $('#board').html(squareString);
-    $('#current_player').html("It is " + this.player + "'s turn");
-  }
-
   Game.prototype.run = function () {
     var game = this;
 
@@ -191,8 +168,8 @@
 
   Game.prototype.turn = function (pos, callback) {
     var game = this;
-    console.log(this.board);
       if (game.valid(pos)) {
+	    console.log(this.board);
         game.move(pos);
         callback();
       } else {
@@ -200,40 +177,6 @@
       }
   }
 
-  Game.POS = [
-  [0,0],
-  [0,1],
-  [0,2],
-  [1,0],
-  [1,1],
-  [1,2],
-  [2,0],
-  [2,1],
-  [2,2],
-  ]
-
-  Game.prototype.setHandlers = function () {
-
-    var game = this;
-    $(".square").click(function(){
-      game.handleClick(this);
-    })
-  }
-
-  Game.prototype.handleClick = function (square) {
-    var game = this;
-
-    if(!game.winner()){
-      game.turn( Game.POS[square.id], function(){
-        if (game.winner()) {
-          var winner = (game.player === Game.marks[0] ? Game.marks[1] : Game.marks[0]);
-          $('#current_player').html(winner + " won!");
-          $('.square').css('background-color', winner);
-          console.log("Someone won!");
-        }
-      });
-    }
-  }
 })(this);
 
 

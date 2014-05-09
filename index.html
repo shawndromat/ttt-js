@@ -3,17 +3,17 @@
   <script src="underscore.js"></script>
   <script src="jquery.js"></script>
   <script src="game.js"></script>
-  <script src="ttt.js"></script>
+  <script src="ttt_ui.js"></script>
   <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
   <p id="current_player"></p>
   <div id="board"></div>
   <script>
-    var TTT = new TTT.Game();
-    TTT.buildBoard();
-    // TTT.run();
-    TTT.setHandlers();
+    var game = new TTT.Game();
+		var UI = new TTT.UI(game, $('#board'));
+		UI.buildBoard();
+		UI.setHandlers();
   </script>
 </body>
 </html>
